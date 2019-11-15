@@ -1,18 +1,20 @@
 # Menu Notification
-# https://johns-hopkins-university.cafebonappetit.com/cafe/fresh-food-cafe/2018-08-28/
+# https://jhu.cafebonappetit.com/cafe/fresh-food-cafe/2019-11-08/
 # Conner Delahanty
-import url
+import requests
 
-def readFFC(month, day, year, ):
+def readFFC(month, day, year):
     menu_items = []
+    menu_url = 'https://jhu.cafebonappetit.com/cafe/fresh-food-cafe/'+year+'-'+month+'-'+day+'/'
+    menu_items.append(menu_url)
     
     try:
-        data = url.read_url('https://johns-hopkins-university.cafebonappetit.com/cafe/fresh-food-cafe/'+year+'-'+month+'-'+day+'/')
+        data = requests.get(menu_url)
     except:
         print("Error loading FFC Menu")
-        return []
+        return [menu_url]
     
-    data = str(data)
+    data = str(data.text)
     
     label_pos = data.find("dinner") # initialization value
     record_word = False
@@ -40,17 +42,19 @@ def readFFC(month, day, year, ):
     return menu_items
 
 
-def readNolans(month, day, year, ):
+def readNolans(month, day, year):
     num_items = 6
     menu_items = []
-    
+    menu_url = 'https://jhu.cafebonappetit.com/cafe/nolans-on-33rd/'+year+'-'+month+'-'+day+'/'
+    menu_items.append(menu_url)
+      
     try:
-        data = url.read_url('https://johns-hopkins-university.cafebonappetit.com/cafe/nolans-on-33rd/'+year+'-'+month+'-'+day+'/')
+        data = requests.get('https://jhu.cafebonappetit.com/cafe/nolans-on-33rd/'+year+'-'+month+'-'+day+'/')
     except:
         print("Error loading Nolan's Menu")
-        return []
+        return [menu_url]
     
-    data = str(data)
+    data = str(data.text)
     
     label_pos = data.find("dinner") # initialization value
     record_word = False
@@ -83,5 +87,6 @@ def readNolans(month, day, year, ):
             if (word_of_interest.find("passport") != -1): # "scratch" is the stopping point
                 break
             if (word_of_interest.find("sauces") == -1 and len(menu_items) < num_items): # if it is not sauces
-                menu_items.append(word_of_interest)          
+                menu_items.append(word_of_interest)   
+                
     return menu_items
